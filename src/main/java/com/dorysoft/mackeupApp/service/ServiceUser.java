@@ -16,4 +16,26 @@ public class ServiceUser implements IServiceUser{
     public List<User> getUsers(){
         return this.iRepositoryUser.findAll();
     }
+    @Override
+    public User getUserById(Long id) {
+        return iRepositoryUser.findById(id).orElse(null);
+    }
+
+    @Override
+    public User saveUser(User user) {
+        return iRepositoryUser.save(user);
+    }
+
+    @Override
+    public User updateUser(User user) {
+        if (iRepositoryUser.existsById(user.getId())) {
+            return iRepositoryUser.save(user);
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        iRepositoryUser.deleteById(id);
+    }
 }
