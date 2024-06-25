@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface IServiceCartProduct {
     List<CartProduct> getCartProducts();
-    CartProduct getCartProductById(Long id);
     CartProduct saveCartProduct(CartProduct cartProduct);
-    CartProduct updateCartProduct(CartProduct cartProduct);
+    CartProduct getCartProduct(Long id);
+    CartProduct updateCartProduct(Long id, CartProduct cartProduct);
     void deleteCartProduct(Long id);
 }

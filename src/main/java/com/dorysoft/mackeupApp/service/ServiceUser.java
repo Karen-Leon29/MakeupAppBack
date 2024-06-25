@@ -27,11 +27,19 @@ public class ServiceUser implements IServiceUser{
     }
 
     @Override
-    public User updateUser(User user) {
-        if (iRepositoryUser.existsById(user.getId())) {
-            return iRepositoryUser.save(user);
-        }
-        return null;
+    public User updateUser(Long id, User user) {
+        return iRepositoryUser.findById(id)
+                .map(existingUser -> {
+                    existingUser.setName(user.getName());
+                    existingUser.setLastName(user.getLastName());
+                    existingUser.setEmail(user.getEmail());
+                    existingUser.setPhone(user.getPhone());
+                    existingUser.setPassword(user.getPassword());
+                    existingUser.setAddress(user.getAddress());
+                    existingUser.setRol(user.getRol());
+                    return iRepositoryUser.save(existingUser);
+                })
+                .orElse(null);
     }
 
     @Override

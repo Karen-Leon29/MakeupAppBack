@@ -11,33 +11,38 @@ import java.util.List;
 public class ServiceCustomerOrder implements IServiceCustomerOrder {
 
     @Autowired
-    private IRepositoryCustomerOrder repositoryCustomerOrder;
+    private IRepositoryCustomerOrder iRepositoryCustomerOrder;
 
     @Override
     public List<CustomerOrder> getCustomerOrders() {
-        return repositoryCustomerOrder.findAll();
+        return iRepositoryCustomerOrder.findAll();
     }
 
     @Override
     public CustomerOrder getCustomerOrderById(Long id) {
-        return repositoryCustomerOrder.findById(id).orElse(null);
+        return iRepositoryCustomerOrder.findById(id).orElse(null);
     }
 
     @Override
     public CustomerOrder saveCustomerOrder(CustomerOrder customerOrder) {
-        return repositoryCustomerOrder.save(customerOrder);
+        return iRepositoryCustomerOrder.save(customerOrder);
     }
 
     @Override
-    public CustomerOrder updateCustomerOrder(CustomerOrder customerOrder) {
-        if (repositoryCustomerOrder.existsById(customerOrder.getId())) {
-            return repositoryCustomerOrder.save(customerOrder);
-        }
-        return null;
+    public CustomerOrder updateCustomerOrder(Long id, CustomerOrder customerOrder) {
+        return iRepositoryCustomerOrder.findById(id)
+                .map(existingCustomerOrder -> {
+                    existingCustomerOrder.setUser(customerOrder.getUser());
+                    existingCustomerOrder.setDateOrder(customerOrder.getDateOrder());
+                    existingCustomerOrder.setStatus(customerOrder.getStatus());
+                    existingCustomerOrder.setTotal(customerOrder.getTotal());
+                    return iRepositoryCustomerOrder.save(existingCustomerOrder);
+                })
+                .orElse(null);
     }
 
     @Override
     public void deleteCustomerOrder(Long id) {
-        repositoryCustomerOrder.deleteById(id);
+        iRepositoryCustomerOrder.deleteById(id);
     }
 }

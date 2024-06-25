@@ -31,9 +31,9 @@ public class ControllerCart {
         return serviceCart.getCartById(id);
     }
 
-    @PostMapping("/addCart")
-    public Cart saveCart(@RequestBody Cart cart) {
-        return serviceCart.saveCart(cart);
+    @PostMapping("/addCart/{id}")
+    public Cart saveCart(@PathVariable Long id, @RequestBody Cart cart) {
+        return serviceCart.updateCart(id, cart);
     }
 
     @DeleteMapping("/deleteCart/{id}")

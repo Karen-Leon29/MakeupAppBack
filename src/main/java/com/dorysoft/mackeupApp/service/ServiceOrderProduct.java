@@ -29,11 +29,15 @@ public class ServiceOrderProduct implements IServiceOrderProduct {
     }
 
     @Override
-    public OrderProduct updateOrderProduct(OrderProduct orderProduct) {
-        if (iRepositoryOrderProduct.existsById(orderProduct.getId())) {
-            return iRepositoryOrderProduct.save(orderProduct);
-        }
-        return null;
+    public OrderProduct updateOrderProduct(Long id, OrderProduct orderProduct) {
+        return iRepositoryOrderProduct.findById(id)
+                .map(existingOrderProduct -> {
+                    existingOrderProduct.setCustomerOrder(orderProduct.getCustomerOrder());
+                    existingOrderProduct.setProduct(orderProduct.getProduct());
+                    existingOrderProduct.setAmount(orderProduct.getAmount());
+                    return iRepositoryOrderProduct.save(existingOrderProduct);
+                })
+                .orElse(null);
     }
 
     @Override

@@ -36,9 +36,9 @@ public class ControllerUser {
         return serviceUser.saveUser(user);
     }
 
-    @PutMapping("/updateUser")
-    public User updateUser(@RequestBody User user) {
-        return serviceUser.updateUser(user);
+    @PutMapping("/updateUser/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+        return serviceUser.updateUser(id, user);
     }
 
     @DeleteMapping("/deleteUser/{id}")

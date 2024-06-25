@@ -36,9 +36,9 @@ public class ControllerCustomerOrder {
         return serviceCustomerOrder.saveCustomerOrder(customerOrder);
     }
 
-    @PutMapping("/updateCustomerOrder")
-    public CustomerOrder updateCustomerOrder(@RequestBody CustomerOrder customerOrder) {
-        return serviceCustomerOrder.updateCustomerOrder(customerOrder);
+    @PutMapping("/updateCustomerOrder/{id}")
+    public CustomerOrder updateCustomerOrder(@PathVariable Long id, @RequestBody CustomerOrder customerOrder) {
+        return serviceCustomerOrder.updateCustomerOrder(id, customerOrder);
     }
 
     @DeleteMapping("/deleteCustomerOrder/{id}")

@@ -7,6 +7,6 @@ import java.util.List;
 public interface IServiceCart {
     List<Cart> getCarts();
     Cart getCartById(Long id);
-    Cart saveCart(Cart cart);
+    Cart updateCart(Long id, Cart cart);
     void deleteCart(Long id);
 }

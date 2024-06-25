@@ -10,25 +10,30 @@ import java.util.List;
 @Service
 public class ServiceCart implements IServiceCart{
     @Autowired
-    private IRepositoryCart repositoryCart;
+    private IRepositoryCart iRepositoryCart;
 
     @Override
     public List<Cart> getCarts() {
-        return repositoryCart.findAll();
+        return iRepositoryCart.findAll();
     }
 
     @Override
     public Cart getCartById(Long id) {
-        return repositoryCart.findById(id).orElse(null);
+        return iRepositoryCart.findById(id).orElse(null);
     }
 
-    @Override
-    public Cart saveCart(Cart cart) {
-        return repositoryCart.save(cart);
+    public Cart updateCart(Long id, Cart cart) {
+        return iRepositoryCart.findById(id)
+                .map(existingCart ->{
+                    existingCart.setUser(cart.getUser());
+                    existingCart.setStatus(cart.getStatus());
+                    return iRepositoryCart.save(existingCart);
+                })
+                .orElse(null);
     }
 
     @Override
     public void deleteCart(Long id) {
-        repositoryCart.deleteById(id);
+        iRepositoryCart.deleteById(id);
     }
 }

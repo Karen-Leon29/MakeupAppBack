@@ -26,11 +26,14 @@ public class ServiceCategory implements IServiceCategory{
     }
 
     @Override
-    public Category updateCategory(Category category) {
-        if (iRepositoryCategory.existsById(category.getId())) {
-            return iRepositoryCategory.save(category);
-        }
-        return null;
+    public Category updateCategory(Long id, Category category) {
+        return iRepositoryCategory.findById(id)
+                .map(existingCategory -> {
+                    existingCategory.setNameCategory(category.getNameCategory());
+                    existingCategory.setDescriptionCategory(category.getDescriptionCategory());
+                    return iRepositoryCategory.save(existingCategory);
+                })
+                .orElse(null);
     }
 
     @Override

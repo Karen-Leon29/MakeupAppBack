@@ -8,6 +8,6 @@ public interface IServiceProduct {
     List<Product> getProducts();
     Product getProductById(Long id);
     Product saveProduct(Product product);
-    Product updateProduct(Product product);
+    Product updateProduct(Long id, Product product);
     void deleteProduct(Long id);
 }

@@ -27,8 +27,8 @@ public class ControllerCartProduct {
     }
 
     @GetMapping("/getCartProduct/{id}")
-    public CartProduct getCartProductById(@PathVariable Long id) {
-        return serviceCartProduct.getCartProductById(id);
+    public CartProduct getCartProduct(@PathVariable Long id) {
+        return serviceCartProduct.getCartProduct(id);
     }
 
     @PostMapping("/createCartProduct")
@@ -36,9 +36,9 @@ public class ControllerCartProduct {
         return serviceCartProduct.saveCartProduct(cartProduct);
     }
 
-    @PutMapping("/updateCartProduct")
-    public CartProduct updateCartProduct(@RequestBody CartProduct cartProduct) {
-        return serviceCartProduct.updateCartProduct(cartProduct);
+    @PutMapping("/updateCartProduct/{id}")
+    public CartProduct updateCartProduct(@PathVariable Long id, @RequestBody CartProduct cartProduct) {
+        return serviceCartProduct.updateCartProduct(id, cartProduct);
     }
 
     @DeleteMapping("/deleteCartProduct/{id}")

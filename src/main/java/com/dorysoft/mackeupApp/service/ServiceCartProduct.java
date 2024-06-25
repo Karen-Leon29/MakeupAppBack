@@ -18,21 +18,25 @@ public class ServiceCartProduct implements IServiceCartProduct{
     }
 
     @Override
-    public CartProduct getCartProductById(Long id) {
-        return iRepositoryCartProduct.findById(id).orElse(null);
-    }
-
-    @Override
     public CartProduct saveCartProduct(CartProduct cartProduct) {
         return iRepositoryCartProduct.save(cartProduct);
     }
 
     @Override
-    public CartProduct updateCartProduct(CartProduct cartProduct) {
-        if (iRepositoryCartProduct.existsById(cartProduct.getId())) {
-            return iRepositoryCartProduct.save(cartProduct);
-        }
-        return null;
+    public CartProduct getCartProduct(Long id) {
+        return iRepositoryCartProduct.findById(id).orElse(null);
+    }
+
+    @Override
+    public CartProduct updateCartProduct(Long id, CartProduct cartProduct) {
+        return iRepositoryCartProduct.findById(id)
+                .map(existingCartProduct -> {
+                    existingCartProduct.setCart(cartProduct.getCart());
+                    existingCartProduct.setProduct(cartProduct.getProduct());
+                    existingCartProduct.setAmount(cartProduct.getAmount());
+                    return iRepositoryCartProduct.save(existingCartProduct);
+                })
+                .orElse(null);
     }
 
     @Override

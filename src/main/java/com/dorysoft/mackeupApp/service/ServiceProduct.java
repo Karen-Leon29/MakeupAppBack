@@ -29,11 +29,19 @@ public class ServiceProduct implements IServiceProduct{
     }
 
     @Override
-    public Product updateProduct(Product product) {
-        if (iRepositoryProduct.existsById(product.getId())) {
-            return iRepositoryProduct.save(product);
-        }
-        return null;
+    public Product updateProduct(Long id, Product product) {
+        return iRepositoryProduct.findById(id)
+                .map(existingProduct -> {
+                    existingProduct.setNameProduct(product.getNameProduct());
+                    existingProduct.setDescription(product.getDescription());
+                    existingProduct.setPrice(product.getPrice());
+                    existingProduct.setAmount(product.getAmount());
+                    existingProduct.setCodeProduct(product.getCodeProduct());
+                    existingProduct.setPhotoProduct(product.getPhotoProduct());
+                    existingProduct.setCategory(product.getCategory());
+                    return iRepositoryProduct.save(existingProduct);
+                })
+                .orElse(null);
     }
 
     @Override
