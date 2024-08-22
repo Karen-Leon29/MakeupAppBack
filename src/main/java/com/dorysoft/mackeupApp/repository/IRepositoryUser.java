@@ -4,4 +4,5 @@ import com.dorysoft.mackeupApp.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IRepositoryUser extends JpaRepository<User, Long> {
+    boolean existsByEmail(String email);
 }

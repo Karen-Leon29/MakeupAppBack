@@ -20,11 +20,11 @@ public class User {
     @Column(length = 100, nullable = false, unique = true)
     private String email;
     @Column(nullable = false, unique = true)
-    private Long phone;
+    private String phone;
     @Column(length = 50, nullable = false)
     private  String password;
     @Column(length = 50, nullable = false)
     private String address;
     @Column(length = 50, nullable = false)
-    private String rol;
+    private String rol = "Cliente";
 }

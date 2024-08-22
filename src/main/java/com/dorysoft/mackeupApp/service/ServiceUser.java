@@ -1,10 +1,12 @@
 package com.dorysoft.mackeupApp.service;
 
 import com.dorysoft.mackeupApp.domain.User;
+import com.dorysoft.mackeupApp.dto.UserRegistrationDto;
 import com.dorysoft.mackeupApp.repository.IRepositoryUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Service
@@ -20,23 +22,28 @@ public class ServiceUser implements IServiceUser{
     public User getUserById(Long id) {
         return iRepositoryUser.findById(id).orElse(null);
     }
-
     @Override
-    public User saveUser(User user) {
+    public User saveUser(@Valid UserRegistrationDto userDto) {
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setPhone(userDto.getPhone());
+        user.setPassword(userDto.getPassword());
+        user.setAddress(userDto.getAddress());
         return iRepositoryUser.save(user);
     }
 
     @Override
-    public User updateUser(Long id, User user) {
+    public User updateUser(Long id, @Valid UserRegistrationDto userDto) {
         return iRepositoryUser.findById(id)
                 .map(existingUser -> {
-                    existingUser.setName(user.getName());
-                    existingUser.setLastName(user.getLastName());
-                    existingUser.setEmail(user.getEmail());
-                    existingUser.setPhone(user.getPhone());
-                    existingUser.setPassword(user.getPassword());
-                    existingUser.setAddress(user.getAddress());
-                    existingUser.setRol(user.getRol());
+                    existingUser.setName(userDto.getName());
+                    existingUser.setLastName(userDto.getLastName());
+                    existingUser.setEmail(userDto.getEmail());
+                    existingUser.setPhone(userDto.getPhone());
+                    existingUser.setPassword(userDto.getPassword());
+                    existingUser.setAddress(userDto.getAddress());
                     return iRepositoryUser.save(existingUser);
                 })
                 .orElse(null);
