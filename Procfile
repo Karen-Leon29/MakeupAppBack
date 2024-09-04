@@ -1,0 +1,1 @@
+web: java -jar makeupApp-0.0.1-SNAPSHOT.jar
