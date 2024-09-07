@@ -1,1 +1,1 @@
-web: java -jar mackeupApp-0.0.1-SNAPSHOT.jar
+web: java -jar target/mackeupApp-0.0.1-SNAPSHOT.jar
