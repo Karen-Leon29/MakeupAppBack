@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ServiceUser implements IServiceUser{
@@ -52,5 +53,9 @@ public class ServiceUser implements IServiceUser{
     @Override
     public void deleteUser(Long id) {
         iRepositoryUser.deleteById(id);
+    }
+
+    public Optional<User> getUserByEmail(String email) {
+        return iRepositoryUser.findByEmail(email);
     }
 }

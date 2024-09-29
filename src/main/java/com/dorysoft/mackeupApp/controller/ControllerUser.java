@@ -1,6 +1,8 @@
 package com.dorysoft.mackeupApp.controller;
 
 import com.dorysoft.mackeupApp.domain.User;
+import com.dorysoft.mackeupApp.dto.LoginRequestDto;
+import com.dorysoft.mackeupApp.dto.LoginResponseDto;
 import com.dorysoft.mackeupApp.dto.UserRegistrationDto;
 import com.dorysoft.mackeupApp.service.ServiceUser;
 import org.slf4j.Logger;
@@ -87,5 +89,24 @@ public class ControllerUser {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody @Valid LoginRequestDto loginRequestDto) {
+        User user = serviceUser.getUserByEmail(loginRequestDto.getEmail()).orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.badRequest().body("Usuario no encontrado.");
+        }
+
+        if (!user.getEmail().equals(loginRequestDto.getEmail())) {
+            return ResponseEntity.badRequest().body("Email incorrecto.");
+        }
+
+        if (!user.getPassword().equals(loginRequestDto.getPassword())) {
+            return ResponseEntity.badRequest().body("Contraseña incorrecta.");
+        }
+
+        return ResponseEntity.ok(user);
     }
 }

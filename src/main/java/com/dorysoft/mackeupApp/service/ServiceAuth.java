@@ -32,7 +32,8 @@ public class ServiceAuth implements IServiceAuth {
                 .orElseThrow(() -> new IllegalArgumentException("Email o contraseña incorrectos"));
 
         if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            return new LoginResponseDto("Sesión iniciada", user.getRol());
+            //return new LoginResponseDto("Sesión iniciada", user.getRol());
+            return null;
         } else {
             throw new IllegalArgumentException("Email o contraseña incorrectos");
         }
