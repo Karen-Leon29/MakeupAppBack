@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(value = "http://localhost:4200") // Asegúrate de que la URL tenga dos puntos
+@CrossOrigin(value = "http://localhost:5173") // Asegúrate de que la URL tenga dos puntos
 @RequestMapping("api-user")
 public class ControllerUser {
     public static final Logger logger = LoggerFactory.getLogger(ControllerUser.class);
