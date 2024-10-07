@@ -3,8 +3,11 @@ package com.dorysoft.mackeupApp.controller;
 import com.dorysoft.mackeupApp.domain.User;
 import com.dorysoft.mackeupApp.dto.LoginRequestDto;
 import com.dorysoft.mackeupApp.dto.LoginResponseDto;
+import com.dorysoft.mackeupApp.dto.TokenRequestDto;
 import com.dorysoft.mackeupApp.dto.UserRegistrationDto;
+import com.dorysoft.mackeupApp.service.JwtService;
 import com.dorysoft.mackeupApp.service.ServiceUser;
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,9 @@ public class ControllerUser {
 
     @Autowired
     private ServiceUser serviceUser;
+
+    @Autowired
+    private JwtService serviceJwt;
 
     @GetMapping("/listUser")
     public List<User> getUsers() {
@@ -96,17 +102,31 @@ public class ControllerUser {
         User user = serviceUser.getUserByEmail(loginRequestDto.getEmail()).orElse(null);
 
         if (user == null) {
-            return ResponseEntity.badRequest().body("Usuario no encontrado.");
-        }
-
-        if (!user.getEmail().equals(loginRequestDto.getEmail())) {
-            return ResponseEntity.badRequest().body("Email incorrecto.");
+            return ResponseEntity.notFound().build();
         }
 
         if (!user.getPassword().equals(loginRequestDto.getPassword())) {
             return ResponseEntity.badRequest().body("Contraseña incorrecta.");
         }
 
-        return ResponseEntity.ok(user);
+        String token =  serviceJwt.generateToken(user);
+
+        LoginResponseDto loginResponseDto = new LoginResponseDto();
+        loginResponseDto.setToken(token);
+        loginResponseDto.setUser(user);
+
+        return ResponseEntity.ok(loginResponseDto);
+    }
+
+    // Añade este método para validar el token
+    @PostMapping("/validateToken")
+    public ResponseEntity<?> validateToken(@RequestBody TokenRequestDto token) {
+        String tokenStr = token.getToken();
+
+        System.out.println("Token recibido: " + tokenStr);
+
+        Claims claims = serviceJwt.getClaims(tokenStr);
+
+        return ResponseEntity.ok(claims);
     }
 }
