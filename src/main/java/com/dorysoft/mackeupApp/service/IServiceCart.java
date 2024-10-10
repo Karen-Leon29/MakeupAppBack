@@ -1,12 +1,11 @@
 package com.dorysoft.mackeupApp.service;
 
 import com.dorysoft.mackeupApp.domain.Cart;
-
-import java.util.List;
+import com.dorysoft.mackeupApp.dto.CartDto;
 
 public interface IServiceCart {
-    List<Cart> getCarts();
-    Cart getCartById(Long id);
-    Cart updateCart(Long id, Cart cart);
-    void deleteCart(Long id);
+    Cart addProductToCart(CartDto cartDto);
+    Cart getCartByUser(Long userId);
+    void removeProductFromCart(Long userId, Long productId);
+    void clearCart(Long userId);
 }
