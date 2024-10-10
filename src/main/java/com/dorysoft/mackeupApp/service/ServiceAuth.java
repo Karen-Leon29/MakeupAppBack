@@ -20,8 +20,10 @@ public class ServiceAuth implements IServiceAuth {
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
 
+    /*
     @Autowired
     private PasswordEncoder passwordEncoder;
+    */
 
     @Autowired
     private IServiceEmail serviceEmail;
@@ -31,7 +33,7 @@ public class ServiceAuth implements IServiceAuth {
         User user = iRepositoryUser.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Email o contraseña incorrectos"));
 
-        if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        if (loginRequest.getPassword().equals(user.getPassword())) {
             //return new LoginResponseDto("Sesión iniciada", user.getRol());
             return null;
         } else {
@@ -73,7 +75,8 @@ public class ServiceAuth implements IServiceAuth {
         User user = token.getUser();
 
         // Resetear la contraseña
-        user.setPassword(passwordEncoder.encode(passwordResetRequest.getNewPassword()));
+        user.setPassword(passwordResetRequest.getNewPassword());
+       // user.setPassword(passwordEncoder.encode(passwordResetRequest.getNewPassword()));
         iRepositoryUser.save(user);
 
         // Eliminar el token después de su uso

@@ -1,23 +1,18 @@
 package com.dorysoft.mackeupApp.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ErrorResponse {
+@AllArgsConstructor
+public class ErrorResponse<T> {
 
     private String code;
     private String message;
-    private List<ErrorDetailResponse> errors;
+    private T data;
 
     public ErrorResponse(String message) {
         this.message = message;

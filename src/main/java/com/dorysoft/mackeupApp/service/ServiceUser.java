@@ -58,4 +58,8 @@ public class ServiceUser implements IServiceUser{
     public Optional<User> getUserByEmail(String email) {
         return iRepositoryUser.findByEmail(email);
     }
+
+    public Optional<User> getUserByPhoneOrEmail(String phone, String email) {
+        return iRepositoryUser.findByPhoneOrEmail(phone, email);
+    }
 }
