@@ -1,5 +1,6 @@
 package com.dorysoft.mackeupApp.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,8 +22,10 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<CartProduct> products;
 
+    private String status;
     private Double totalPrice;
     private Boolean isActive;
 }

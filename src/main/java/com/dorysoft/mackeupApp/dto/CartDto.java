@@ -11,4 +11,7 @@ public class CartDto {
     private Long userId;
     private Long productId;
     private int quantity;
+    private String status;
+    private Double totalPrice;
+    private Boolean isActive;
 }

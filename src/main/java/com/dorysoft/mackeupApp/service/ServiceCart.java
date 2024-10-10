@@ -75,7 +75,7 @@ public class ServiceCart implements IServiceCart {
         }
 
         User user = userOptional.get();
-        Cart newCart = new Cart(null, user, new ArrayList<>(), 0.0, true);
+        Cart newCart = new Cart(null, user, new ArrayList<>(),"activo", 0.0, true);
         return iRepositoryCart.save(newCart);
     }
 }
