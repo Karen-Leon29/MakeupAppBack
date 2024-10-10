@@ -33,7 +33,7 @@ public class ServiceCartProduct implements IServiceCartProduct{
                 .map(existingCartProduct -> {
                     existingCartProduct.setCart(cartProduct.getCart());
                     existingCartProduct.setProduct(cartProduct.getProduct());
-                    existingCartProduct.setAmount(cartProduct.getAmount());
+                    existingCartProduct.setQuantity(cartProduct.getQuantity());
                     return iRepositoryCartProduct.save(existingCartProduct);
                 })
                 .orElse(null);
