@@ -1,14 +1,16 @@
 package com.dorysoft.mackeupApp.controller;
 
 import com.dorysoft.mackeupApp.domain.User;
-import com.dorysoft.mackeupApp.dto.LoginRequestDto;
-import com.dorysoft.mackeupApp.dto.LoginResponseDto;
-import com.dorysoft.mackeupApp.dto.TokenRequestDto;
-import com.dorysoft.mackeupApp.dto.UserRegistrationDto;
+import com.dorysoft.mackeupApp.dto.*;
 import com.dorysoft.mackeupApp.exceptions.ErrorResponse;
 import com.dorysoft.mackeupApp.response.SuccessResponse;
 import com.dorysoft.mackeupApp.service.JwtService;
+import com.dorysoft.mackeupApp.service.ServicePasswordResetToken;
 import com.dorysoft.mackeupApp.service.ServiceUser;
+import com.dorysoft.mackeupApp.utils.Utils;
+import com.dorysoft.mackeupApp.validations.LoginUserValidator;
+import com.dorysoft.mackeupApp.validations.RecoverPasswordValidator;
+import com.dorysoft.mackeupApp.validations.ResetPasswordValidator;
 import com.dorysoft.mackeupApp.validations.UserRegistrationValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,9 @@ public class ControllerUser {
     @Autowired
     private JwtService serviceJwt;
 
+    @Autowired
+    private ServicePasswordResetToken servicePasswordResetToken;
+
     @GetMapping("/listUser")
     public List<User> getUsers() {
         List<User> listUser = this.serviceUser.getUsers();
@@ -52,7 +57,7 @@ public class ControllerUser {
     }
 
     @PostMapping("/registerUser")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRegistrationDto registrationDto, BindingResult result) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRegistrationDto registrationDto) {
         ErrorResponse errorResponse = new ErrorResponse();
 
         UserRegistrationValidator validator = new UserRegistrationValidator();
@@ -133,9 +138,20 @@ public class ControllerUser {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody @Valid LoginRequestDto loginRequestDto) {
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        LoginUserValidator validator = new LoginUserValidator();
+        Map<String, List<String>> validationErrors = validator.validate(loginRequestDto);
+
+        if (!validationErrors.isEmpty()) {
+            errorResponse.setCode("ERR_VALIDATION");
+            errorResponse.setMessage("Errores de validación de campo.");
+            errorResponse.setData(validationErrors);
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
         User user = serviceUser.getUserByEmail(loginRequestDto.getEmail()).orElse(null);
 
-        ErrorResponse errorResponse = new ErrorResponse();
         if (user == null) {
             errorResponse.setCode("ERR_USER_NOT_FOUND");
             errorResponse.setMessage("Usuario no encontrado.");
@@ -174,5 +190,76 @@ public class ControllerUser {
             ErrorResponse errorResponse = new ErrorResponse("ERR_TOKEN_NOT_VALID", "Token no válido");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
+    }
+
+    @PostMapping("/recoverPassword")
+    public ResponseEntity<?> recoverPassword(@RequestBody RecoverPasswordRequestDto requestDto) {
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        RecoverPasswordValidator validator = new RecoverPasswordValidator();
+        Map<String, List<String>> validationErrors = validator.validate(requestDto);
+
+        if (!validationErrors.isEmpty()) {
+            errorResponse.setCode("ERR_VALIDATION");
+            errorResponse.setMessage("Errores de validación de campo.");
+            errorResponse.setData(validationErrors);
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        User user = serviceUser.getUserByEmail(requestDto.getEmail()).orElse(null);
+
+        if (user == null) {
+            errorResponse.setCode("ERR_USER_NOT_FOUND");
+            errorResponse.setMessage("Usuario no encontrado.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+
+        String code = Utils.generarCodigo(6); // Genera un código de 6 dígitos
+        servicePasswordResetToken.createPasswordResetTokenForUser(user, code);
+
+        SuccessResponse<User> successResponse = new SuccessResponse<>("00", "Code of recovery password sent");
+        return ResponseEntity.ok(successResponse);
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<?> changePassword(@RequestBody ResetPasswordRequestDto requestDto) {
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        ResetPasswordValidator validator = new ResetPasswordValidator();
+        Map<String, List<String>> validationErrors = validator.validate(requestDto);
+
+        if (!validationErrors.isEmpty()) {
+            errorResponse.setCode("ERR_VALIDATION");
+            errorResponse.setMessage("Errores de validación de campo.");
+            errorResponse.setData(validationErrors);
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        User user = serviceUser.getUserByEmail(requestDto.getEmail()).orElse(null);
+
+        if (user == null) {
+            errorResponse.setCode("ERR_USER_NOT_FOUND");
+            errorResponse.setMessage("Usuario no encontrado.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+
+       String isUpdate = servicePasswordResetToken.changeUserPassword(user, requestDto.getPassword(), requestDto.getCode());
+
+        if(isUpdate.equals("code")){
+            errorResponse.setCode("ERR_CODE_NOT_VALID");
+            errorResponse.setMessage("Código no válido.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }else if(isUpdate.equals("expired")){
+            errorResponse.setCode("ERR_CODE_EXPIRED");
+            errorResponse.setMessage("Código expirado.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }else if(isUpdate.equals("notfound")){
+            errorResponse.setCode("ERR_USER_NOT_FOUND");
+            errorResponse.setMessage("Usuario no encontrado.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+
+        SuccessResponse<User> successResponse = new SuccessResponse<>("00", "Password updated");
+        return ResponseEntity.ok(successResponse);
     }
 }
