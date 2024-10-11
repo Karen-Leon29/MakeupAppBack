@@ -31,7 +31,8 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
 
         String path = request.getServletPath();
 
-        if (path.contains("/api-user/registerUser") || path.contains("/api-user/login") || path.contains("/api-user/validateToken")) {
+        if (path.contains("/api-user/registerUser") || path.contains("/api-user/login") || path.contains("/api-user/validateToken")
+                || path.contains("/api-user/recoverPassword") || path.contains("/api-user/changePassword")) {
             return true;
         }
 
