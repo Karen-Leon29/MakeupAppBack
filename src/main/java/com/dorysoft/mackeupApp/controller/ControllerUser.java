@@ -1,5 +1,6 @@
 package com.dorysoft.mackeupApp.controller;
 
+import com.dorysoft.mackeupApp.config.Public;
 import com.dorysoft.mackeupApp.domain.User;
 import com.dorysoft.mackeupApp.dto.*;
 import com.dorysoft.mackeupApp.exceptions.ErrorResponse;
@@ -7,6 +8,7 @@ import com.dorysoft.mackeupApp.response.SuccessResponse;
 import com.dorysoft.mackeupApp.service.JwtService;
 import com.dorysoft.mackeupApp.service.ServicePasswordResetToken;
 import com.dorysoft.mackeupApp.service.ServiceUser;
+import com.dorysoft.mackeupApp.utils.AppConstants;
 import com.dorysoft.mackeupApp.utils.Utils;
 import com.dorysoft.mackeupApp.validations.LoginUserValidator;
 import com.dorysoft.mackeupApp.validations.RecoverPasswordValidator;
@@ -56,6 +58,7 @@ public class ControllerUser {
         return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
+    @Public
     @PostMapping("/registerUser")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRegistrationDto registrationDto) {
         ErrorResponse errorResponse = new ErrorResponse();
@@ -98,7 +101,7 @@ public class ControllerUser {
         }
 
         user = serviceUser.saveUser(registrationDto);
-        user.setRol("Cliente"); // Asigna el rol por defecto
+        user.setRol(AppConstants.ROLE_CLIENTE); // Asigna el rol por defecto
 
         user = serviceUser.updateUser(user.getId(), registrationDto);
         SuccessResponse<User> successResponse = new SuccessResponse<>("00", "Registered user", user);
@@ -136,6 +139,7 @@ public class ControllerUser {
         }
     }
 
+    @Public
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody @Valid LoginRequestDto loginRequestDto) {
         ErrorResponse errorResponse = new ErrorResponse();
@@ -174,6 +178,7 @@ public class ControllerUser {
         return ResponseEntity.ok(loginResponseDto);
     }
 
+    @Public
     @PostMapping("/validateToken")
     public ResponseEntity<?> validateToken(@RequestBody TokenRequestDto token) {
         String tokenStr = token.getToken();
@@ -192,6 +197,7 @@ public class ControllerUser {
         }
     }
 
+    @Public
     @PostMapping("/recoverPassword")
     public ResponseEntity<?> recoverPassword(@RequestBody RecoverPasswordRequestDto requestDto) {
         ErrorResponse errorResponse = new ErrorResponse();
@@ -221,6 +227,7 @@ public class ControllerUser {
         return ResponseEntity.ok(successResponse);
     }
 
+    @Public
     @PostMapping("/changePassword")
     public ResponseEntity<?> changePassword(@RequestBody ResetPasswordRequestDto requestDto) {
         ErrorResponse errorResponse = new ErrorResponse();
