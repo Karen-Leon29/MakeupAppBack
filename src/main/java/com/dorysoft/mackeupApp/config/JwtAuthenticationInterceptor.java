@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.lang.reflect.Method;
+
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationInterceptor implements HandlerInterceptor {
@@ -29,11 +31,17 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
             return  true;
         }
 
-        String path = request.getServletPath();
+        // Verificar si el handler es una instancia de HandlerMethod (es decir, un método de controlador)
+        if (handler instanceof org.springframework.web.method.HandlerMethod) {
+            org.springframework.web.method.HandlerMethod handlerMethod = (org.springframework.web.method.HandlerMethod) handler;
 
-        if (path.contains("/api-user/registerUser") || path.contains("/api-user/login") || path.contains("/api-user/validateToken")
-                || path.contains("/api-user/recoverPassword") || path.contains("/api-user/changePassword")) {
-            return true;
+            // Verificar si el método o su clase tienen la anotación @Public
+            Method method = handlerMethod.getMethod();
+            if (method.isAnnotationPresent(Public.class) ||
+                    handlerMethod.getBeanType().isAnnotationPresent(Public.class)) {
+                // Si tiene la anotación @Public, permite el acceso sin validación
+                return true;
+            }
         }
 
         ErrorResponse errorResponse = new ErrorResponse();
