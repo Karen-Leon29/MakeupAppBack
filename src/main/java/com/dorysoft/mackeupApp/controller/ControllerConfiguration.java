@@ -14,7 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(value = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173","https://dnc6ui1xnp6tg.cloudfront.net"})
 @RequestMapping("/api/configuration")
 @Validated
 public class ControllerConfiguration {
