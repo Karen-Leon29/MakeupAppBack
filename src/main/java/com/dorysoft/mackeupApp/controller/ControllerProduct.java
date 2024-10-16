@@ -1,29 +1,29 @@
 package com.dorysoft.mackeupApp.controller;
 
 import com.dorysoft.mackeupApp.domain.Product;
+import com.dorysoft.mackeupApp.domain.ProductImage;
 import com.dorysoft.mackeupApp.service.ServiceProduct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.dorysoft.mackeupApp.service.ServiceProductImage; // Asegúrate de importar el servicio correcto
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("api-product")
 public class ControllerProduct {
-    public static final Logger logger = LoggerFactory.getLogger(ControllerProduct.class);
-
     @Autowired
     private ServiceProduct serviceProduct;
 
+    @Autowired
+    private ServiceProductImage serviceProductImage; // Importa el servicio para las imágenes
+
     @GetMapping("/listProduct")
     public List<Product> getProducts(){
-        List<Product> listProduct = this.serviceProduct.getProducts();
-        return listProduct;
+        return this.serviceProduct.getProducts();
     }
+
     @GetMapping("/getProduct/{id}")
     public Product getProductById(@PathVariable Long id) {
         return serviceProduct.getProductById(id);
@@ -42,5 +42,17 @@ public class ControllerProduct {
     @DeleteMapping("/deleteProduct/{id}")
     public void deleteProduct(@PathVariable Long id) {
         serviceProduct.deleteProduct(id);
+    }
+
+    // Método para agregar imágenes a un producto
+    @PostMapping("/addImage/{productId}")
+    public ProductImage addImageToProduct(@PathVariable Long productId, @RequestBody ProductImage productImage) {
+        return serviceProductImage.addProductImage(productId, productImage);
+    }
+
+    // Método para obtener las imágenes de un producto
+    @GetMapping("/getImages/{productId}")
+    public List<ProductImage> getProductImages(@PathVariable Long productId) {
+        return serviceProductImage.getImagesByProductId(productId);
     }
 }

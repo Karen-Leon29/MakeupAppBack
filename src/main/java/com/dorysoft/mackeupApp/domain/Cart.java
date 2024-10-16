@@ -22,7 +22,6 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
     private List<CartProduct> products;
 
     private String status;

@@ -10,19 +10,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartProduct {
+public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_id", nullable = false)
-    private Cart cart;
+    @Column(length = 300, nullable = false)
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
-
-    @Column(nullable = false)
-    private int quantity;
+    @JsonBackReference
+    private Product product; // Relación con Product
 }
