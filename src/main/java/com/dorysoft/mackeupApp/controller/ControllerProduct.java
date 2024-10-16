@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173","https://dnc6ui1xnp6tg.cloudfront.net"})
+@CrossOrigin(origins = "*")
 @RequestMapping("api-product")
 public class ControllerProduct {
     public static final Logger logger = LoggerFactory.getLogger(ControllerProduct.class);
@@ -22,8 +22,6 @@ public class ControllerProduct {
     @GetMapping("/listProduct")
     public List<Product> getProducts(){
         List<Product> listProduct = this.serviceProduct.getProducts();
-        logger.info("Registro lista de productos");
-        listProduct.forEach(product -> logger.info(product.toString()));
         return listProduct;
     }
     @GetMapping("/getProduct/{id}")

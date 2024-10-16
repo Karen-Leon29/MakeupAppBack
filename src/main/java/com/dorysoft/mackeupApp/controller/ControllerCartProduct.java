@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173","https://dnc6ui1xnp6tg.cloudfront.net"})
+@CrossOrigin(origins = "*")
 @RequestMapping("api-cartproduct")
 public class ControllerCartProduct {
     public static final Logger logger = LoggerFactory.getLogger(ControllerCartProduct.class);

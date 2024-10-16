@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173","https://dnc6ui1xnp6tg.cloudfront.net"})
+@CrossOrigin(origins = "*")
 @RequestMapping("api-user")
 @Validated
 public class ControllerUser {
